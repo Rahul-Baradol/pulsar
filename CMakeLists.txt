@@ -24,7 +24,11 @@ target_link_libraries(main_app PRIVATE core)
 # --- Tests ---
 enable_testing()
 
-add_executable(runTests tests/test_value.cpp)
-target_link_libraries(runTests PRIVATE core)
+add_executable(run_value_test tests/test_value.cpp)
+add_executable(run_nn_test tests/test_nn.cpp)
 
-add_test(NAME AutogradTests COMMAND runTests)
+target_link_libraries(run_value_test PRIVATE core)
+target_link_libraries(run_nn_test PRIVATE core)
+
+add_test(NAME ValueTest COMMAND run_value_test)
+add_test(NAME NNTest COMMAND run_nn_test)
