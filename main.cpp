@@ -1,4 +1,4 @@
-#include "layer.h"
+#include "nn.h"
 
 int main() {
     std::vector<Value*> v = {
@@ -8,12 +8,12 @@ int main() {
         new Value(5.3)
     };
 
-    Layer *layer = new Layer(4, 3);
-    vector<Value*> outs = layer -> forward(v);
+    NeuralNet *net = new NeuralNet(4, {5, 3, 1});
+    std::vector<Value*> outs = net -> forward(v);
 
-    for (Value *ele: outs) {
+    for (Value *ele: outs) {    
         cout << ele -> get_data() << endl;
     }
 
-    return 0;   
+    
 }

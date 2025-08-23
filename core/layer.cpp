@@ -4,9 +4,9 @@ Layer::Layer(int number_of_inputs, int number_of_neurons) {
     this -> number_of_inputs = number_of_inputs;
     this -> number_of_neurons = number_of_neurons;
 
-    neurons.reserve(number_of_neurons);
+    (this -> neurons).reserve(number_of_neurons);
     for (int i = 0; i < number_of_neurons; i++) {
-        neurons.emplace_back(
+        (this -> neurons).emplace_back(
             new Neuron(number_of_inputs)
         );
     }

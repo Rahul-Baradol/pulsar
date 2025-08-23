@@ -12,6 +12,7 @@ add_library(core
     core/value.cpp
     core/neuron.cpp
     core/layer.cpp
+    core/nn.cpp
 )
 
 target_include_directories(core PUBLIC include)
