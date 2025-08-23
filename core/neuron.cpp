@@ -15,9 +15,8 @@ Neuron::Neuron(int number_of_inputs)
     }
 }
 
-Value* Neuron::forward(std::vector<Value*> &input) {
+Value* Neuron::forward(std::vector<Value*> &input, bool enable_activation) {
     if (input.size() != number_of_inputs) {
-        cout << "Expected input count " << number_of_inputs << ", but got " << input.size() << std::endl;
         throw std::invalid_argument("Input size does not match number of inputs for neuron.");
     }
 
@@ -29,8 +28,17 @@ Value* Neuron::forward(std::vector<Value*> &input) {
         Value *tmp = (*a) * (*b);
 
         sum = (*sum) + (*tmp);      
-
     }
     
-    return sum -> tanh();
+    if (enable_activation) {
+        sum = sum -> tanh();
+    }
+
+    return sum;
+}
+
+std::vector<Value*> Neuron::get_parameters() {
+    std::vector<Value*> params = this -> weights;
+    params.push_back(this -> bias);
+    return params;
 }

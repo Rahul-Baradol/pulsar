@@ -7,21 +7,20 @@
 #include <functional>
 #include <cmath>
 
-using namespace std;
-
 class Value {
 private:
     double data;
     double gradient;
-    vector<Value*> children;
-    string op;    
+    std::string op;    
+    std::vector<Value*> children;
+    std::function<void()> _backward;
     
 public: 
-    function<void()> _backward;
+    void update_gradients();
     
     Value(double data);
 
-    Value(double data, vector<Value*> children, string op);
+    Value(double data, std::vector<Value*> children, std::string op);
     
     Value* operator+(Value &other);
 
@@ -39,7 +38,15 @@ public:
 
     double get_gradient();
 
+    std::string get_op();
+
+    std::vector<Value*> get_children();
+
     void add_gradient(double gradient);
+
+    void set_data(double gradient);
+
+    void reset_gradient();
 };
 
 #endif

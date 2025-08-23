@@ -18,7 +18,9 @@ private:
 public:
     Neuron(int number_of_inputs);
 
-    Value* forward(std::vector<Value*> &input);
+    Value* forward(std::vector<Value*> &input, bool enable_activation);
+
+    std::vector<Value*> get_parameters();
 };
 
 #endif

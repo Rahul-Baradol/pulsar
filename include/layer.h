@@ -12,7 +12,9 @@ private:
 public:
     Layer(int number_of_inputs, int number_of_neurons);
 
-    std::vector<Value*> forward(std::vector<Value*> &inputs);
+    std::vector<Value*> forward(std::vector<Value*> &inputs, bool enable_activation);
+
+    std::vector<Value*> get_parameters();
 };
 
 #endif
