@@ -1,8 +1,6 @@
-#include "neuron.h"
+#include "layer.h"
 
 int main() {
-    Neuron *neuron = new Neuron(4);
-
     std::vector<Value*> v = {
         new Value(2.3),
         new Value(3.3),
@@ -10,8 +8,12 @@ int main() {
         new Value(5.3)
     };
 
-    Value *result = neuron -> forward(v);
-    cout << result -> get_data() << endl;
+    Layer *layer = new Layer(4, 3);
+    vector<Value*> outs = layer -> forward(v);
+
+    for (Value *ele: outs) {
+        cout << ele -> get_data() << endl;
+    }
 
     return 0;   
 }
