@@ -32,6 +32,8 @@ Value* Neuron::forward(std::vector<Value*> &input, bool enable_activation) {
     
     if (enable_activation) {
         sum = sum -> tanh();
+    } else {
+        sum = sum -> sigmoid();
     }
 
     return sum;

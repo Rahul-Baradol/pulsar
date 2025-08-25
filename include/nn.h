@@ -18,6 +18,7 @@ public:
     std::vector<Value*> forward(std::vector<Value*> &input);
 
     Value* get_loss(std::vector<Value*> ypred, std::vector<Value*> ygt);
+    Value* get_classification_loss(std::vector<Value*> ypred, std::vector<Value*> ygt);
 
     void backward(std::vector<Value*> ypred, std::vector<Value*> ygt);
 

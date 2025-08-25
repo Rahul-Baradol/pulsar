@@ -32,6 +32,10 @@ public:
 
     Value* tanh();
 
+    Value* sigmoid();
+
+    Value* log();
+
     void show();
 
     double get_data();

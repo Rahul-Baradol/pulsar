@@ -46,11 +46,44 @@ Value* NeuralNet::get_loss(std::vector<Value*> ypred, std::vector<Value*> ygt) {
     return loss;
 }
 
+Value* NeuralNet::get_classification_loss(std::vector<Value*> ypred, std::vector<Value*> ygt) {
+    Value* pred = ypred[0];  
+    Value* target = ygt[0];
+
+    // log(pred)
+    Value* log_pred = pred -> log();  
+
+    // target * log(pred)
+    Value* t_log_pred = (*target) * (*log_pred);
+
+    // (1 - target)
+    Value* one_val = new Value(1.0);
+    Value* one_minus_target = (*one_val) - (*target);
+
+    // (1 - pred)
+    Value* one_minus_pred = (*one_val) - (*pred);
+
+    // log(1 - pred)
+    Value* log_one_minus_pred = one_minus_pred -> log();
+
+    // (1 - target) * log(1 - pred)
+    Value* t2_log = (*one_minus_target) * (*log_one_minus_pred);
+
+    // combine: target*log(pred) + (1 - target)*log(1 - pred)
+    Value* sum = (*t_log_pred) + (*t2_log);
+
+    // negate: -( ... )
+    Value *neg_one = new Value(-1.0);
+    Value* loss = (*neg_one) * (*sum);
+
+    return loss;
+}
+
 void NeuralNet::backward(std::vector<Value*> ypred, std::vector<Value*> ygt) {
     std::vector<Value*> parameters = this -> get_parameters();
 
     
-    Value *loss = get_loss(ypred, ygt);
+    Value *loss = get_classification_loss(ypred, ygt);
     loss -> add_gradient(1.0);
     loss -> update_gradients();
     

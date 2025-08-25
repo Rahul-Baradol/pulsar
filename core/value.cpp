@@ -126,6 +126,44 @@ Value* Value::tanh() {
     return new_value;
 }
 
+Value* Value::sigmoid() {
+    double sigmoid_value = 1.0 / (1.0 + std::exp(-1.0 * this -> data));
+
+    Value *new_value = new Value(
+        sigmoid_value,
+        vector<Value*>{this},
+        "sigmoid"
+    );
+
+    auto _backward = [this, sigmoid_value, new_value]() {
+        double gradient = sigmoid_value * (1.0 - sigmoid_value);
+        this -> add_gradient(gradient * new_value -> get_gradient());
+    };
+
+    new_value -> _backward = _backward;
+    return new_value;
+}
+
+Value* Value::log() {
+    double eps = 1e-8;
+    double log_value = std::log(this->data + eps);
+
+    Value* new_value = new Value(
+        log_value,
+        vector<Value*>{this},
+        "log"
+    );
+
+    auto _backward = [this, new_value, eps]() {
+        double gradient = 1.0 / (this -> data + eps);
+        this -> add_gradient(gradient * new_value -> get_gradient());
+    };
+
+    new_value -> _backward = _backward;
+
+    return new_value;
+}
+
 void Value::show() {
     cout << "Value={data=" << data << ", gradient=" << gradient << "}" << endl; 
 }

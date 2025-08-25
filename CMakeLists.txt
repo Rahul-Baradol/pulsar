@@ -21,6 +21,9 @@ target_include_directories(core PUBLIC include)
 add_executable(main_app main.cpp)
 target_link_libraries(main_app PRIVATE core)
 
+add_executable(data_spiral_predict data/spiral/predict.cpp)
+target_link_libraries(data_spiral_predict PRIVATE core)
+
 # --- Tests ---
 enable_testing()
 
