@@ -121,3 +121,28 @@ TEST_CASE("testing tanh gradient") {
     CHECK(resptr -> get_gradient() == g1);
     CHECK(a -> get_gradient() == expected);
 }
+
+TEST_CASE("testing sigmoid") {
+    Value *a = new Value(d1);
+
+    Value *resptr = a -> sigmoid();
+    double res = resptr -> get_data();
+    double expected = 1.0 / (1.0 + exp(-1.0 * d1));
+
+    CHECK(res == expected);
+}
+
+TEST_CASE("testing sigmoid gradient") {
+    Value *a = new Value(d1);
+    double sigmoid_value = 1.0 / (1.0 + exp(-1.0 * d1));
+
+    double expected = g1 * sigmoid_value * (1 - sigmoid_value);
+
+    Value *resptr = a -> sigmoid();
+
+    resptr -> add_gradient(g1);
+    resptr -> update_gradients();
+
+    CHECK(resptr -> get_gradient() == g1);
+    CHECK(a -> get_gradient() == expected);
+}
