@@ -9,6 +9,17 @@ So far,
 
 Check [experiments](https://github.com/Rahul-Baradol/pulsar/tree/main/experiments) where the tool is tested with real world examples
 
+## Experiments
+
+### 1. Spiral Prediction
+- Predicting what class the point belongs to - either red or blue
+
+![Spiral Prediction - Train vs Test](/images/experiment_spiral_train_test.png)
+
+### Results
+
+![Spiral Prediction - Results](/images/experiment_spiral_result.png)
+
 ## Why build this?
 
 For fun :)
