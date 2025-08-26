@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <random>
+#include <chrono>
 
 using namespace std;
 
@@ -76,7 +77,9 @@ void train(NeuralNet *net) {
     mt19937 gen(42);
     uniform_int_distribution<> dist(1, rows.size() - 1);
 
-    int steps = 2000;
+    int steps = 5000;
+
+    auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < steps; i++) {
         int sample_index = dist(gen);
         Row sample = rows[sample_index];
@@ -97,6 +100,10 @@ void train(NeuralNet *net) {
             std::cout << "step " << (i+1) << " completed" << std::endl;
         }
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout << "Training completed in " << elapsed.count() << " seconds." << std::endl;
+
 }
 
 void test(NeuralNet *net) {
@@ -118,8 +125,7 @@ void test(NeuralNet *net) {
 }
 
 int main() {
-    NeuralNet *net = new NeuralNet(2, {64, 64, 64, 1}, {
-        activation_function::tanh,
+    NeuralNet *net = new NeuralNet(2, {96, 64, 1}, {
         activation_function::tanh,
         activation_function::tanh,
         activation_function::sigmoid

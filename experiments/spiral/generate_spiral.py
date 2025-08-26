@@ -19,12 +19,12 @@ def generate_spiral(N=100, noise=0.2):
     y = np.hstack([y_a, y_b])
     return X, y
 
-X, y = generate_spiral(N=500)
+X, y = generate_spiral(N=1300)
 
 df = pd.DataFrame(X, columns=['x', 'y'])
 df['label'] = y
 
-train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df['label'])
+train_df, test_df = train_test_split(df, test_size=0.4, random_state=42, stratify=df['label'])
 
 train_df.to_csv('spiral_train.csv', index=False)
 test_df.to_csv('spiral_test.csv', index=False)
