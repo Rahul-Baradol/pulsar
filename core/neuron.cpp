@@ -26,8 +26,11 @@ Value* Neuron::forward(std::vector<Value*> &input, activation_function act_fun) 
         Value *b = this -> weights[i];
         
         Value *tmp = (*a) * (*b);
-
+        
         sum = (*sum) + (*tmp);      
+        
+        residual_pointers.push_back(tmp);
+        residual_pointers.push_back(sum);
     }
     
     if (act_fun == activation_function::tanh) {
@@ -37,6 +40,8 @@ Value* Neuron::forward(std::vector<Value*> &input, activation_function act_fun) 
     if (act_fun == activation_function::sigmoid) {
         sum = sum -> sigmoid();
     }
+    
+    residual_pointers.push_back(sum);
 
     return sum;
 }
@@ -45,4 +50,13 @@ std::vector<Value*> Neuron::get_parameters() {
     std::vector<Value*> params = this -> weights;
     params.push_back(this -> bias);
     return params;
+}
+
+void Neuron::clear_residual_data() {
+    while (!(this -> residual_pointers).empty()) {
+        Value *node = residual_pointers.back();
+        residual_pointers.pop_back();
+
+        delete node;
+    }
 }

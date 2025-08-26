@@ -32,3 +32,9 @@ std::vector<Value*> Layer::get_parameters() {
     }
     return params;
 }
+
+void Layer::clear_residual_data() {
+    for (Neuron *neuron: neurons) {
+        neuron -> clear_residual_data();
+    }
+}

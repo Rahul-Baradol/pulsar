@@ -15,6 +15,8 @@ public:
     std::vector<Value*> forward(std::vector<Value*> &inputs, activation_function act_fun);
 
     std::vector<Value*> get_parameters();
+
+    void clear_residual_data();
 };
 
 #endif

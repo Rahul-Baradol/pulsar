@@ -20,6 +20,7 @@ private:
     int number_of_inputs;
     std::vector<Value*> weights;
     Value *bias;
+    std::vector<Value*> residual_pointers;
 
 public:
     Neuron(int number_of_inputs);
@@ -27,6 +28,8 @@ public:
     Value* forward(std::vector<Value*> &input, activation_function act_fun);
 
     std::vector<Value*> get_parameters();
+
+    void clear_residual_data();
 };
 
 #endif

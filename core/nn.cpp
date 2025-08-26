@@ -53,6 +53,10 @@ void NeuralNet::backward(std::vector<Value*> ypred, std::vector<Value*> ygt) {
         value -> set_data(updated_value);
         value -> reset_gradient();
     }
+
+    for (Layer *layer: layers) {
+        layer -> clear_residual_data();
+    }
 } 
 
 std::vector<Value*> NeuralNet::get_parameters() {
