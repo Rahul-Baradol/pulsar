@@ -21,11 +21,12 @@ private:
     std::vector<Value*> weights;
     Value *bias;
     std::vector<Value*> residual_pointers;
+    activation_function act_fun;
 
 public:
-    Neuron(int number_of_inputs);
+    Neuron(int neuron_index, int number_of_inputs, activation_function act_fun);
 
-    Value* forward(std::vector<Value*> &input, activation_function act_fun);
+    Value* forward(std::vector<Value*> &input);
 
     std::vector<Value*> get_parameters();
 

@@ -15,7 +15,7 @@ private:
     loss_function loss_fn;
 
 public: 
-    NeuralNet(int number_of_inputs, std::vector<int> neurons_per_layer, loss_function loss_fn);
+    NeuralNet(int number_of_inputs, std::vector<int> neurons_per_layer, std::vector<activation_function> layer_funs, loss_function loss_fn);
 
     std::vector<Value*> forward(std::vector<Value*> &input);
 

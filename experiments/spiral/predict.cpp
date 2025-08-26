@@ -70,13 +70,13 @@ void write_csv(vector<Row> rows, string csv_file) {
 void train(NeuralNet *net) {
     vector<Row> rows = read_csv("/home/rahulbaradol/Documents/projects/pulsar/experiments/spiral/spiral_train.csv");
     int size = rows.size();
-    cout << "Size of training dataset: " << size << " rows!" << endl;
+    cout << "Size of training dataset: " << size << " rows" << endl << endl;
 
     random_device rd;
-    mt19937 gen(rd());
+    mt19937 gen(42);
     uniform_int_distribution<> dist(1, rows.size() - 1);
 
-    int steps = 5000;
+    int steps = 2000;
     for (int i = 0; i < steps; i++) {
         int sample_index = dist(gen);
         Row sample = rows[sample_index];
@@ -92,6 +92,10 @@ void train(NeuralNet *net) {
 
         vector<Value*> ypred = net -> forward(input);
         net -> backward(ypred, ygt);
+
+        if ((i + 1) % 100 == 0) {
+            std::cout << "step " << (i+1) << " completed" << std::endl;
+        }
     }
 }
 
@@ -114,7 +118,12 @@ void test(NeuralNet *net) {
 }
 
 int main() {
-    NeuralNet *net = new NeuralNet(2, {64, 64, 1}, loss_function::bce);
+    NeuralNet *net = new NeuralNet(2, {64, 64, 64, 1}, {
+        activation_function::tanh,
+        activation_function::tanh,
+        activation_function::tanh,
+        activation_function::sigmoid
+    }, loss_function::bce);
 
     train(net);
 

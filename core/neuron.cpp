@@ -2,8 +2,8 @@
 #include "neuron.h"
 #include <vector>
 
-Neuron::Neuron(int number_of_inputs)
- : gen(rd()), dist(-1.0, 1.0), number_of_inputs(number_of_inputs) 
+Neuron::Neuron(int neuron_index, int number_of_inputs, activation_function act_fun)
+ : gen(42 + neuron_index), dist(-1.0, 1.0), number_of_inputs(number_of_inputs), act_fun(act_fun) 
  {
     this -> bias = new Value(dist(gen));
 
@@ -15,7 +15,7 @@ Neuron::Neuron(int number_of_inputs)
     }
 }
 
-Value* Neuron::forward(std::vector<Value*> &input, activation_function act_fun) {
+Value* Neuron::forward(std::vector<Value*> &input) {
     if (input.size() != number_of_inputs) {
         throw std::invalid_argument("Input size does not match number of inputs for neuron.");
     }
@@ -33,12 +33,17 @@ Value* Neuron::forward(std::vector<Value*> &input, activation_function act_fun) 
         residual_pointers.push_back(sum);
     }
     
-    if (act_fun == activation_function::tanh) {
-        sum = sum -> tanh();
-    }
-    
-    if (act_fun == activation_function::sigmoid) {
-        sum = sum -> sigmoid();
+    switch (this -> act_fun) {
+        case activation_function::tanh:
+            sum = sum -> tanh();
+            break;
+
+        case activation_function::sigmoid:
+            sum = sum -> sigmoid();
+            break;
+
+        default: 
+            throw std::runtime_error("Unknown activation function.");
     }
     
     residual_pointers.push_back(sum);

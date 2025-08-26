@@ -10,9 +10,9 @@ private:
     std::vector<Neuron*> neurons;
 
 public:
-    Layer(int number_of_inputs, int number_of_neurons);
+    Layer(int layer_index, int number_of_inputs, int number_of_neurons, activation_function act_fun);
 
-    std::vector<Value*> forward(std::vector<Value*> &inputs, activation_function act_fun);
+    std::vector<Value*> forward(std::vector<Value*> &inputs);
 
     std::vector<Value*> get_parameters();
 
