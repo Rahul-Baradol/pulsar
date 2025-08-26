@@ -1,12 +1,14 @@
 #include "nn.h"
 #include "layer.h"
 #include "value.h"
+#include "loss.h"
 #include <vector>
 
-NeuralNet::NeuralNet(int number_of_inputs, std::vector<int> neurons_per_layer) {
+NeuralNet::NeuralNet(int number_of_inputs, std::vector<int> neurons_per_layer, loss_function loss_fn) {
     this -> learning_rate = 0.01;
     this -> number_of_inputs = number_of_inputs;
     this -> neurons_per_layer = neurons_per_layer;
+    this -> loss_fn = loss_fn;
 
     neurons_per_layer.insert(neurons_per_layer.begin(), number_of_inputs);
     int size = neurons_per_layer.size();
@@ -22,68 +24,25 @@ std::vector<Value*> NeuralNet::forward(std::vector<Value*> &input) {
     
     std::vector<Value*> out = input;
     for (int i = 0; i < size - 1; i++) {
-        out = (this -> layers[i]) -> forward(out, true);
+        out = (this -> layers[i]) -> forward(out, activation_function::tanh);
     }
     
-    out = (this -> layers[size-1]) -> forward(out, false);
+    out = (this -> layers[size-1]) -> forward(out, activation_function::sigmoid);
     return out;
-}
-
-Value* NeuralNet::get_loss(std::vector<Value*> ypred, std::vector<Value*> ygt) {
-    if (ypred.size() != ygt.size()) {
-        throw std::invalid_argument("ypred size does not match ygt size");
-    }
-
-    Value *loss = new Value(0.0);
-    
-    int size = ypred.size();
-    for (int i = 0; i < size; i++) {
-        Value *diff = (*ypred[i]) - (*ygt[i]);
-        Value *sq = (*diff) * (*diff);
-        loss = (*loss) + (*sq);
-    }
-
-    return loss;
-}
-
-Value* NeuralNet::get_classification_loss(std::vector<Value*> ypred, std::vector<Value*> ygt) {
-    Value* pred = ypred[0];  
-    Value* target = ygt[0];
-
-    // log(pred)
-    Value* log_pred = pred -> log();  
-
-    // target * log(pred)
-    Value* t_log_pred = (*target) * (*log_pred);
-
-    // (1 - target)
-    Value* one_val = new Value(1.0);
-    Value* one_minus_target = (*one_val) - (*target);
-
-    // (1 - pred)
-    Value* one_minus_pred = (*one_val) - (*pred);
-
-    // log(1 - pred)
-    Value* log_one_minus_pred = one_minus_pred -> log();
-
-    // (1 - target) * log(1 - pred)
-    Value* t2_log = (*one_minus_target) * (*log_one_minus_pred);
-
-    // combine: target*log(pred) + (1 - target)*log(1 - pred)
-    Value* sum = (*t_log_pred) + (*t2_log);
-
-    // negate: -( ... )
-    Value *neg_one = new Value(-1.0);
-    Value* loss = (*neg_one) * (*sum);
-
-    return loss;
 }
 
 void NeuralNet::backward(std::vector<Value*> ypred, std::vector<Value*> ygt) {
     std::vector<Value*> parameters = this -> get_parameters();
 
-    
-    Value *loss = get_classification_loss(ypred, ygt);
+    Value *loss;
+    if (this -> loss_fn == loss_function::mse) {
+        loss = Loss::mean_squared(ypred, ygt);
+    }
+
+    if (this -> loss_fn == loss_function::bce) {
+        loss = Loss::binary_cross_entropy(ypred, ygt);
+    }
+
     loss -> add_gradient(1.0);
     loss -> update_gradients();
     

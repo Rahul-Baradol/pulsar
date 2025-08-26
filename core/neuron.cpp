@@ -15,7 +15,7 @@ Neuron::Neuron(int number_of_inputs)
     }
 }
 
-Value* Neuron::forward(std::vector<Value*> &input, bool enable_activation) {
+Value* Neuron::forward(std::vector<Value*> &input, activation_function act_fun) {
     if (input.size() != number_of_inputs) {
         throw std::invalid_argument("Input size does not match number of inputs for neuron.");
     }
@@ -30,9 +30,11 @@ Value* Neuron::forward(std::vector<Value*> &input, bool enable_activation) {
         sum = (*sum) + (*tmp);      
     }
     
-    if (enable_activation) {
+    if (act_fun == activation_function::tanh) {
         sum = sum -> tanh();
-    } else {
+    }
+    
+    if (act_fun == activation_function::sigmoid) {
         sum = sum -> sigmoid();
     }
 

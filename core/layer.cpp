@@ -14,10 +14,10 @@ Layer::Layer(int number_of_inputs, int number_of_neurons) {
     }
 }
 
-std::vector<Value*> Layer::forward(std::vector<Value*> &input, bool enable_activation) {    
+std::vector<Value*> Layer::forward(std::vector<Value*> &input, activation_function act_fun) {    
     std::vector<Value*> outs;
     for (Neuron *neuron: this -> neurons) {
-        Value *res = neuron -> forward(input, enable_activation);
+        Value *res = neuron -> forward(input, act_fun);
         outs.push_back(res);
     }
     return outs;

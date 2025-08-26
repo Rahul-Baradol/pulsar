@@ -1,4 +1,5 @@
 #include "nn.h"
+#include "loss.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -113,7 +114,7 @@ void test(NeuralNet *net) {
 }
 
 int main() {
-    NeuralNet *net = new NeuralNet(2, {64, 64, 1});
+    NeuralNet *net = new NeuralNet(2, {64, 64, 1}, loss_function::bce);
 
     train(net);
 

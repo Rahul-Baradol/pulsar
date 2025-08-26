@@ -5,6 +5,12 @@
 #include <vector>
 #include <random>
 
+enum class activation_function {
+    tanh,
+    sigmoid,
+    none,
+};
+
 class Neuron {
 private:    
     std::random_device rd;
@@ -18,7 +24,7 @@ private:
 public:
     Neuron(int number_of_inputs);
 
-    Value* forward(std::vector<Value*> &input, bool enable_activation);
+    Value* forward(std::vector<Value*> &input, activation_function act_fun);
 
     std::vector<Value*> get_parameters();
 };
