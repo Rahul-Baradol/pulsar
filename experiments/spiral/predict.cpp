@@ -68,7 +68,7 @@ void write_csv(vector<Row> rows, string csv_file) {
     file.close();
 }
 
-void train(NeuralNet *net) {
+void train(NeuralNet *net, int steps) {
     vector<Row> rows = read_csv("/home/rahulbaradol/Documents/projects/pulsar/experiments/spiral/spiral_train.csv");
     int size = rows.size();
     cout << "Size of training dataset: " << size << " rows" << endl << endl;
@@ -76,8 +76,6 @@ void train(NeuralNet *net) {
     random_device rd;
     mt19937 gen(42);
     uniform_int_distribution<> dist(1, rows.size() - 1);
-
-    int steps = 5000;
 
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < steps; i++) {
@@ -106,6 +104,49 @@ void train(NeuralNet *net) {
 
 }
 
+void train_batch(NeuralNet *net, int steps, int batch_size) {
+    vector<Row> rows = read_csv("/home/rahulbaradol/Documents/projects/pulsar/experiments/spiral/spiral_train.csv");
+    int size = rows.size();
+    cout << "Size of training dataset: " << size << " rows" << endl << endl;
+
+    random_device rd;
+    mt19937 gen(42);
+    uniform_int_distribution<> dist(1, rows.size() - 1);
+
+    int cnt = 0;
+    auto start = std::chrono::high_resolution_clock::now();
+    while (steps > 0) {
+        int sample_index = dist(gen);
+
+        for (int j = sample_index; j < (sample_index + batch_size) && j < size && steps > 0; j++) {
+            Row sample = rows[j];
+    
+            vector<Value*> input = {
+                new Value(sample.x),
+                new Value(sample.y)  
+            };
+    
+            vector<Value*> ygt = {
+                new Value(sample.label)
+            };
+    
+            vector<Value*> ypred = net -> forward(input);
+            net -> backward(ypred, ygt);
+            
+            steps--;
+            cnt++;
+
+            if (cnt % 100 == 0) {
+                std::cout << "step " << cnt << " completed" << std::endl;
+            }
+        }
+
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout << "Batch Training completed in " << elapsed.count() << " seconds." << std::endl;
+}
+
 void test(NeuralNet *net) {
     vector<Row> rows = read_csv("/home/rahulbaradol/Documents/projects/pulsar/experiments/spiral/spiral_test.csv");
     int size = rows.size();
@@ -131,7 +172,8 @@ int main() {
         activation_function::sigmoid
     }, loss_function::bce);
 
-    train(net);
+    // train(net, 5000);
+    train_batch(net, 5000, 20);
 
     test(net);
 
