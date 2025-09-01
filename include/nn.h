@@ -10,6 +10,7 @@ class NeuralNet {
 private:
     double learning_rate;
     int number_of_inputs;
+    int parameter_count;
     std::vector<int> neurons_per_layer;
     std::vector<Layer*> layers;
     loss_function loss_fn;
@@ -21,7 +22,11 @@ public:
 
     void backward(std::vector<Value*> ypred, std::vector<Value*> ygt);
 
+    void set_parameters(std::vector<Value*> parameters);
+
     std::vector<Value*> get_parameters();
+
+    int get_parameter_count();
 };      
 
 #endif

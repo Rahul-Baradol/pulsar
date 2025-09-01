@@ -18,6 +18,7 @@ private:
     std::uniform_real_distribution<double> dist{-1.0, 1.0};
 
     int number_of_inputs;
+    int parameter_count;
     std::vector<Value*> weights;
     Value *bias;
     std::vector<Value*> residual_pointers;
@@ -28,7 +29,11 @@ public:
 
     Value* forward(std::vector<Value*> &input);
 
+    void set_parameters(std::vector<Value*> parameters);
+
     std::vector<Value*> get_parameters();
+
+    int get_parameter_count();
 
     void clear_residual_data();
 };

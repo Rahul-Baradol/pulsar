@@ -26,13 +26,12 @@ NeuralNet::NeuralNet(int number_of_inputs, std::vector<int> neurons_per_layer, s
     neurons_per_layer.insert(neurons_per_layer.begin(), number_of_inputs);
 
     int size = neurons_per_layer.size();
-    int parameter_count = 0;
     
     for (int i = 0; i < size - 1; i++) {
-        parameter_count += (neurons_per_layer[i] + 1) * neurons_per_layer[i+1];
+        this -> parameter_count += (neurons_per_layer[i] + 1) * neurons_per_layer[i+1];
     }
     
-    std::cout << "Neural net of " << (size - 1) << " layers, " << parameter_count << " parameters" << std::endl;
+    std::cout << "Neural net of " << (size - 1) << " layers, " << this -> parameter_count << " parameters" << std::endl;
     for (int i = 0; i < size - 1; i++) {
         std::cout << "Layer " << (i+1) << ": " << neurons_per_layer[i+1] << " neurons, " << act_fun_to_string(layer_funs[i]) << " activation" << std::endl;
 
@@ -95,6 +94,22 @@ void NeuralNet::backward(std::vector<Value*> ypred, std::vector<Value*> ygt) {
     }
 } 
 
+void NeuralNet::set_parameters(std::vector<Value*> parameters) {
+    int number_of_layers = (this -> layers).size();
+
+    int start = 0;
+    for (int i = 0; i < number_of_layers; i++) {
+        int parameter_count = (this -> layers)[i] -> get_parameter_count();
+        int end = start + parameter_count;
+
+        std::vector<Value*> layer_params(parameters.begin() + start, parameters.begin() + end);
+
+        (this -> layers)[i] -> set_parameters(layer_params);
+        
+        start = end;
+    } 
+}
+
 std::vector<Value*> NeuralNet::get_parameters() {
     std::vector<Value*> params;
 
@@ -103,4 +118,8 @@ std::vector<Value*> NeuralNet::get_parameters() {
         params.insert(params.end(), layer_params.begin(), layer_params.end());
     }
     return params;
+}
+
+int NeuralNet::get_parameter_count() {
+    return this -> parameter_count;
 }

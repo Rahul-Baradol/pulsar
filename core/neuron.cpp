@@ -13,6 +13,8 @@ Neuron::Neuron(int neuron_index, int number_of_inputs, activation_function act_f
             new Value(dist(gen))
         );
     }
+
+    this -> parameter_count = number_of_inputs + 1;
 }
 
 Value* Neuron::forward(std::vector<Value*> &input) {
@@ -51,10 +53,21 @@ Value* Neuron::forward(std::vector<Value*> &input) {
     return sum;
 }
 
+void Neuron::set_parameters(std::vector<Value*> parameters) {
+    this -> bias = parameters.back();
+    parameters.pop_back();
+
+    this -> weights = parameters;
+}
+
 std::vector<Value*> Neuron::get_parameters() {
     std::vector<Value*> params = this -> weights;
     params.push_back(this -> bias);
     return params;
+}
+
+int Neuron::get_parameter_count() {
+    return this -> parameter_count;
 }
 
 void Neuron::clear_residual_data() {

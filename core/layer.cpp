@@ -14,6 +14,8 @@ Layer::Layer(int layer_index, int number_of_inputs, int number_of_neurons, activ
                 act_fun
             )
         );
+
+        this -> parameter_count += number_of_inputs + 1;
     }
 }
 
@@ -34,6 +36,25 @@ std::vector<Value*> Layer::get_parameters() {
         params.insert(params.end(), neuron_params.begin(), neuron_params.end());
     }
     return params;
+}
+
+void Layer::set_parameters(std::vector<Value*> parameters) {
+    int number_of_neurons = (this -> neurons).size();
+    
+    int start = 0;
+    for (int i = 0; i < number_of_neurons; i++) {
+        int parameter_count = (this -> neurons)[i] -> get_parameter_count();
+        int end = start + parameter_count;
+
+        std::vector<Value*> params(parameters.begin() + start, parameters.begin() + end);
+        (this -> neurons)[i] -> set_parameters(params);
+
+        start = end;
+    }
+}
+
+int Layer::get_parameter_count() {
+    return this -> parameter_count;
 }
 
 void Layer::clear_residual_data() {

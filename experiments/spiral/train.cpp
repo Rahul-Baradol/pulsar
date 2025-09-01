@@ -1,5 +1,6 @@
 #include "nn.h"
 #include "loss.h"
+#include "checkpoint.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -147,24 +148,6 @@ void train_batch(NeuralNet *net, int steps, int batch_size) {
     std::cout << "Batch Training completed in " << elapsed.count() << " seconds." << std::endl;
 }
 
-void test(NeuralNet *net) {
-    vector<Row> rows = read_csv("/home/rahulbaradol/Documents/projects/pulsar/experiments/spiral/spiral_test.csv");
-    int size = rows.size();
-    cout << "Size of testing dataset: " << size << " rows!" << endl;
-
-    for (Row &row: rows) {
-        vector<Value*> input = {
-            new Value(row.x),
-            new Value(row.y)  
-        };
-
-        vector<Value*> prediction = net -> forward(input);
-        row.label = (prediction[0] -> get_data()) > 0.5;
-    } 
-
-    write_csv(rows, "spiral_test_prediction.csv");
-}
-
 int main() {
     NeuralNet *net = new NeuralNet(2, {96, 64, 1}, {
         activation_function::tanh,
@@ -172,10 +155,14 @@ int main() {
         activation_function::sigmoid
     }, loss_function::bce);
 
-    // train(net, 5000);
     train_batch(net, 5000, 20);
 
-    test(net);
+    vector<Value*> parameters = net -> get_parameters();
+
+    checkpoint *chp = new checkpoint();
+    chp -> set_parameters(parameters);
+
+    chp -> save("net.pulse");
 
     return 0;
 }

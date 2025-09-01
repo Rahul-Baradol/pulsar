@@ -7,6 +7,7 @@ class Layer {
 private:
     int number_of_inputs;
     int number_of_neurons;
+    int parameter_count;
     std::vector<Neuron*> neurons;
 
 public:
@@ -14,7 +15,11 @@ public:
 
     std::vector<Value*> forward(std::vector<Value*> &inputs);
 
+    void set_parameters(std::vector<Value*> parameters);
+
     std::vector<Value*> get_parameters();
+
+    int get_parameter_count();
 
     void clear_residual_data();
 };
